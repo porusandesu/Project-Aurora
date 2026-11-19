@@ -13,12 +13,23 @@ permissions:
   contents: read
 
 jobs:
+  privacy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Check privacy rules
+        env:
+          # Optional repository secret: a regular expression of private terms.
+          PRIVATE_TERMS: ${{ secrets.PRIVATE_TERMS }}
+        run: python3 tools/privacy_check.py
+
   verify:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           flutter-version: 3.47.7
           channel: stable
@@ -36,7 +47,7 @@ jobs:
       - name: Build Android debug APK
         run: flutter build apk --debug --split-per-abi --no-pub
       - name: Keep APK for review
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: aurora-android-debug
           path: build/app/outputs/flutter-apk/app-*-debug.apk
@@ -47,8 +58,8 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
           flutter-version: 3.47.7
           channel: stable
