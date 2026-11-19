@@ -1,6 +1,6 @@
 # Releases and canary rollouts
 
-Pull requests and pushes to `main` run `.github/workflows/ci.yml` on GitHub-hosted runners. CI formats, analyzes, tests, builds Android arm32/arm64 APKs and an iOS simulator app, and keeps the Android APK as a short-lived artifact. Routine verification does not need to compile mobile builds locally.
+Pull requests and pushes to `main` run `.github/workflows/ci.yml` on GitHub-hosted runners. CI formats, analyzes, tests, builds split Android ARM32, ARM64, and x86_64 APKs and an iOS simulator app, and keeps the Android APKs as a short-lived artifact. Routine verification does not need to compile mobile builds locally.
 
 ## Manual release
 
@@ -10,7 +10,7 @@ From a reviewed commit on `main`, run the **Android release** workflow with:
 - `canary` for an early release or `stable` for a full release.
 - A local feature cohort percentage. Canary accepts 1–99%; stable requires 100%.
 
-The workflow validates and tests the source, writes the chosen rollout into the bundled `assets/feature_manifest.json`, builds Android arm32/arm64 APKs with a monotonically increasing build number, computes a SHA-256 checksum, then publishes a GitHub Release. Canary releases are marked pre-release. The APK, checksum, and manifest are attached to that release.
+The workflow validates and tests the source, writes the chosen rollout into the bundled `assets/feature_manifest.json`, builds separate Android ARM32, ARM64, and x86_64 APKs with a monotonically increasing build number, computes SHA-256 checksums, then publishes a GitHub Release. Canary releases are marked pre-release. The APKs, checksum file, and manifest are attached to that release.
 
 ## How the feature cohort works
 

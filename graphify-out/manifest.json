@@ -5,22 +5,16 @@
     "ast_hash": "005ac71c84af2cae38e255e2b9de2411",
     "semantic_hash": ""
   },
-  ".gemini/settings.json": {
-    "mtime": 1795108928.0807807,
-    "seen": 1795110014.6611497,
-    "ast_hash": "315f7d93e8735bbb964584f8df42eb41",
-    "semantic_hash": ""
-  },
   ".github/workflows/android-release.yml": {
-    "mtime": 1795109928.643654,
-    "seen": 1795110014.661162,
-    "ast_hash": "88c4f15b64b967bdb7128a784a1f09a3",
+    "mtime": 1795110580.0120707,
+    "seen": 1795110595.3535533,
+    "ast_hash": "81faf4e669496dcbe5e232bc4d88753d",
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1795109831.5732474,
-    "seen": 1795110014.6611702,
-    "ast_hash": "36e7f42ae691ac31c73c96a22d6fcdde",
+    "mtime": 1795110512.1224442,
+    "seen": 1795110595.3535686,
+    "ast_hash": "39f56c37e0eb3946c3406ca36fe45528",
     "semantic_hash": ""
   },
   "analysis_options.yaml": {
@@ -258,9 +252,9 @@
     "semantic_hash": ""
   },
   "docs/releases.md": {
-    "mtime": 1795109935.200618,
-    "seen": 1795110014.6614075,
-    "ast_hash": "9434a94452944572e50b99c305464783",
+    "mtime": 1795110580.12407,
+    "seen": 1795110595.353849,
+    "ast_hash": "7b8375f5eb35a71be933e7a489e4e124",
     "semantic_hash": ""
   },
   "ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md": {

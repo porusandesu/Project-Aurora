@@ -34,12 +34,12 @@ jobs:
       - name: Test
         run: flutter test --no-pub
       - name: Build Android debug APK
-        run: flutter build apk --debug --target-platform android-arm,android-arm64 --no-pub
+        run: flutter build apk --debug --split-per-abi --no-pub
       - name: Keep APK for review
         uses: actions/upload-artifact@v4
         with:
           name: aurora-android-debug
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: build/app/outputs/flutter-apk/app-*-debug.apk
           if-no-files-found: error
           retention-days: 7
 

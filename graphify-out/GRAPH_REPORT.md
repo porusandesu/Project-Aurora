@@ -1,18 +1,18 @@
 # Graph Report - Project-Aurora  (2026-11-19)
 
 ## Corpus Check
-- 45 files · ~11,822 words
+- 44 files · ~11,822 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 35 file(s) not represented in the graph (top: .xml 7, (none) 6, .plist 4)
-- WARNING: 35 of 109 files seen (32%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
+- WARNING: 35 of 108 files seen (32%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
 
 ## Summary
-- 444 nodes · 533 edges · 27 communities (18 shown, 9 thin omitted)
+- 448 nodes · 541 edges · 27 communities (18 shown, 9 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f26e1031`
+- Built from commit: `c60d37e1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -43,9 +43,9 @@
 ## God Nodes (most connected - your core abstractions)
 1. `Win32Window` - 27 edges
 2. `FlutterWindow` - 12 edges
-3. `with` - 8 edges
-4. `configure_manifest()` - 8 edges
-5. `WindowClassRegistrar` - 8 edges
+3. `with` - 9 edges
+4. `WindowClassRegistrar` - 8 edges
+5. `configure_manifest()` - 8 edges
 6. `_MyApplication` - 7 edges
 7. `channel` - 6 edges
 8. `steps` - 6 edges
@@ -57,12 +57,12 @@
   windows/runner/flutter_window.cpp → windows/flutter/generated_plugin_registrant.cc
 - `wWinMain()` --calls--> `CreateAndAttachConsole()`  [INFERRED]
   windows/runner/main.cpp → windows/runner/utils.cpp
+- `FlutterWindow` --inherits--> `Win32Window`  [EXTRACTED]
+  windows/runner/flutter_window.h → windows/runner/win32_window.h
 - `my_application_activate()` --calls--> `fl_register_plugins()`  [INFERRED]
   linux/runner/my_application.cc → linux/flutter/generated_plugin_registrant.cc
 - `main()` --calls--> `my_application_new()`  [INFERRED]
   linux/runner/main.cc → linux/runner/my_application.cc
-- `FlutterWindow` --inherits--> `Win32Window`  [EXTRACTED]
-  windows/runner/flutter_window.h → windows/runner/win32_window.h
 
 ## Import Cycles
 - None detected.
@@ -91,7 +91,7 @@ Nodes (26): aliases, alightingStop, area, boardingStop, canonicalName, descripti
 
 ### Community 5 - "with"
 Cohesion: 0.07
-Nodes (26): concurrency, cancel-in-progress, group, jobs, verify, name, on, pull_request (+18 more)
+Nodes (30): concurrency, cancel-in-progress, group, runs-on, steps, timeout-minutes, jobs, ios-simulator (+22 more)
 
 ### Community 6 - "FlutterWindow"
 Cohesion: 0.08
@@ -142,8 +142,8 @@ Cohesion: 0.40
 Nodes (4): AuroraShell, _AuroraShellState, _PlanPage, _PlanPageState
 
 ## Knowledge Gaps
-- **112 isolated node(s):** `XCTest`, `FeatureRule`, `enabled`, `rolloutPercentage`, `minimumAppVersion` (+107 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 269 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **112 isolated node(s):** `child_content_`, `x`, `y`, `quit_on_close_`, `height` (+107 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 268 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
@@ -151,15 +151,15 @@ _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Win32Window` connect `Win32Window` to `utils.cpp`, `FlutterWindow`?**
   _High betweenness centrality (0.020) - this node is a cross-community bridge._
-- **What connects `XCTest`, `FeatureRule`, `enabled` to the rest of the system?**
+- **What connects `child_content_`, `x`, `y` to the rest of the system?**
   _112 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Win32Window` be split into smaller, more focused modules?**
   _Cohesion score 0.06397306397306397 - nodes in this community are weakly interconnected._
 - **Why does `FlutterWindow` connect `FlutterWindow` to `Win32Window`, `utils.cpp`?**
-  _High betweenness centrality (0.011) - this node is a cross-community bridge._
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
 - **Should `main.dart` be split into smaller, more focused modules?**
   _Cohesion score 0.045454545454545456 - nodes in this community are weakly interconnected._
 - **Why does `FeatureFlagSnapshot` connect `feature_flags.dart` to `main.dart`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
 - **Should `my_application.cc` be split into smaller, more focused modules?**
   _Cohesion score 0.08735632183908046 - nodes in this community are weakly interconnected._
