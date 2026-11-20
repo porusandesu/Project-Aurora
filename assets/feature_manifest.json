@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "1",
+  "appMinimumVersion": "1.0.0",
+  "features": {
+    "journey_planner": {
+      "enabled": true,
+      "rolloutPercentage": 100,
+      "minimumAppVersion": "1.0.0",
+      "killSwitch": false
+    }
+  }
+}

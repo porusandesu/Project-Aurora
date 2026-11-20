@@ -1,0 +1,93 @@
+name: Android release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version in MAJOR.MINOR.PATCH format
+        required: true
+        type: string
+      channel:
+        description: Release channel
+        required: true
+        type: choice
+        options: [canary, stable]
+        default: canary
+      rollout_percentage:
+        description: Local feature cohort percentage (stable must be 100)
+        required: true
+        type: number
+        default: 10
+
+permissions:
+  contents: write
+
+concurrency:
+  group: android-release-${{ inputs.channel }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: 3.47.7
+          channel: stable
+          cache: true
+      - name: Resolve dependencies
+        run: flutter pub get
+      - name: Check privacy rules
+        env:
+          PRIVATE_TERMS: ${{ secrets.PRIVATE_TERMS }}
+        run: python3 tools/privacy_check.py
+      - name: Verify source
+        run: |
+          dart format --output=none --set-exit-if-changed lib test
+          python3 -m unittest discover -s tests
+          flutter analyze --no-pub
+          flutter test --no-pub
+      - name: Configure release manifest
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_CHANNEL: ${{ inputs.channel }}
+          ROLLOUT_PERCENTAGE: ${{ inputs.rollout_percentage }}
+        run: |
+          python3 tools/configure_release.py \
+            "$RELEASE_VERSION" "$RELEASE_CHANNEL" "$ROLLOUT_PERCENTAGE"
+      - name: Build Android release APK
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          flutter build apk --release --split-per-abi --no-pub \
+            --build-name "$RELEASE_VERSION" \
+            --build-number "$GITHUB_RUN_NUMBER" \
+            --dart-define="AURORA_APP_VERSION=$RELEASE_VERSION"
+      - name: Create checksums
+        run: |
+          sha256sum build/app/outputs/flutter-apk/app-*-release.apk > app-release-checksums.txt
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_CHANNEL: ${{ inputs.channel }}
+          ROLLOUT_PERCENTAGE: ${{ inputs.rollout_percentage }}
+        run: |
+          tag="aurora-v${RELEASE_VERSION}-${RELEASE_CHANNEL}"
+          prerelease=()
+          if [[ "$RELEASE_CHANNEL" == "canary" ]]; then
+            prerelease=(--prerelease)
+          fi
+          gh release create "$tag" \
+            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk \
+            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk \
+            build/app/outputs/flutter-apk/app-x86_64-release.apk \
+            app-release-checksums.txt \
+            assets/feature_manifest.json \
+            --target "$GITHUB_SHA" \
+            --title "Aurora ${RELEASE_VERSION} (${RELEASE_CHANNEL})" \
+            --notes "Android ARM32, ARM64, and x86_64 release APKs. Feature rollout cohort: ${ROLLOUT_PERCENTAGE}%. The rollout bucket is stored locally and is never uploaded." \
+            "${prerelease[@]}"

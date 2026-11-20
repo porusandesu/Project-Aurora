@@ -1,0 +1,1 @@
+# Android permissions and iOS keys approved for release. Empty: none requested.

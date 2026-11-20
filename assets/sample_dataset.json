@@ -1,0 +1,37 @@
+{
+  "version": "sample-1",
+  "updatedAt": "2026-11-19",
+  "routes": [
+    {"id": "route-blue", "name": "Blue line", "description": "Sample route · not a real service", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "route-green", "name": "Green line", "description": "Sample route · not a real service", "source": "Synthetic demonstration data", "verificationStatus": "sample"}
+  ],
+  "stops": [
+    {"id": "stop-central", "name": "Central stop", "area": "Central", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "stop-market", "name": "Market stop", "area": "Central", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "stop-library", "name": "Library stop", "area": "North", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "stop-east", "name": "East stop", "area": "East", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "stop-west", "name": "West stop", "area": "West", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "stop-south", "name": "South stop", "area": "South", "source": "Synthetic demonstration data", "verificationStatus": "sample"}
+  ],
+  "routeStops": [
+    {"routeId": "route-blue", "stopId": "stop-central", "position": 1},
+    {"routeId": "route-blue", "stopId": "stop-market", "position": 2},
+    {"routeId": "route-blue", "stopId": "stop-library", "position": 3},
+    {"routeId": "route-blue", "stopId": "stop-east", "position": 4},
+    {"routeId": "route-green", "stopId": "stop-west", "position": 1},
+    {"routeId": "route-green", "stopId": "stop-market", "position": 2},
+    {"routeId": "route-green", "stopId": "stop-south", "position": 3}
+  ],
+  "landmarks": [
+    {"id": "place-hall", "canonicalName": "Community hall", "area": "Central", "stopId": "stop-central", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "place-library", "canonicalName": "North library", "area": "North", "stopId": "stop-library", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "place-gardens", "canonicalName": "Riverside gardens", "area": "East", "stopId": "stop-east", "source": "Synthetic demonstration data", "verificationStatus": "sample"},
+    {"id": "place-studio", "canonicalName": "Arts studio", "area": "South", "stopId": "stop-south", "source": "Synthetic demonstration data", "verificationStatus": "sample"}
+  ],
+  "aliases": [
+    {"landmarkId": "place-hall", "name": "the hall", "approved": 1, "source": "Synthetic demonstration data"},
+    {"landmarkId": "place-library", "name": "old library", "approved": 1, "source": "Synthetic demonstration data"},
+    {"landmarkId": "place-gardens", "name": "the gardens", "approved": 1, "source": "Synthetic demonstration data"},
+    {"landmarkId": "place-studio", "name": "the studio", "approved": 1, "source": "Synthetic demonstration data"}
+  ]
+}

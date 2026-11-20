@@ -1,0 +1,1 @@
+# Dart files allowed to use network APIs. Empty: the app makes no network calls.
