@@ -1,18 +1,18 @@
 # Graph Report - Project-Aurora  (2026-11-25)
 
 ## Corpus Check
-- 66 files · ~19,702 words
+- 68 files · ~20,780 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 38 file(s) not represented in the graph (top: (none) 7, .xml 7, .plist 4)
-- WARNING: 38 of 136 files seen (28%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
+- WARNING: 38 of 138 files seen (28%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
 
 ## Summary
-- 691 nodes · 863 edges · 45 communities (29 shown, 16 thin omitted)
+- 729 nodes · 908 edges · 45 communities (31 shown, 14 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c1d8b6bb`
+- Built from commit: `2c54cf08`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -52,7 +52,7 @@
 - Win32Window
 - .MessageHandler
 - shared_place_message_test.dart
-- _RecordingDatabase
+- directions_to_point.dart
 - shared_place_en.dart
 
 ## God Nodes (most connected - your core abstractions)
@@ -82,7 +82,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (45 total, 16 thin omitted)
+## Communities (45 total, 14 thin omitted)
 
 ### Community 0 - "win32_window.cpp"
 Cohesion: 0.16
@@ -101,8 +101,8 @@ Cohesion: 0.07
 Nodes (28): bucket, core, currentParts, directory, enabled, FeatureFlagSnapshot, FeatureRule, fromJson (+20 more)
 
 ### Community 4 - "models.dart"
-Cohesion: 0.04
-Nodes (42): accuracyMetres, aliases, alightingStop, area, boardingNote, boardingStop, canonicalName, changes (+34 more)
+Cohesion: 0.05
+Nodes (40): accuracyMetres, aliases, alightingStop, area, boardingNote, boardingStop, canonicalName, changes (+32 more)
 
 ### Community 5 - "with"
 Cohesion: 0.06
@@ -145,7 +145,7 @@ Cohesion: 0.13
 Nodes (13): ConfigureManifestTest, configure_manifest(), main(), check_backup(), check_dependencies(), check_network(), check_paths(), check_permissions() (+5 more)
 
 ### Community 15 - "plus_code.dart"
-Cohesion: 0.08
+Cohesion: 0.09
 Nodes (21): _alphabet, codeLength, contains, decode, _decodeUnchecked, east, encode, encodeRounded100m (+13 more)
 
 ### Community 16 - "analysis_options.yaml"
@@ -153,8 +153,12 @@ Cohesion: 0.33
 Nodes (5): analyzer, exclude, include, linter, rules
 
 ### Community 17 - "feature_flags_test.dart"
-Cohesion: 0.17
-Nodes (8): insert, inserts, load, main, _manifest, _ManifestBundle, query, rolloutBucket
+Cohesion: 0.14
+Nodes (9): insert, inserts, load, main, _manifest, _ManifestBundle, _MemorySettingsDatabase, query (+1 more)
+
+### Community 18 - "models_test.dart"
+Cohesion: 0.16
+Nodes (5): main, main, _route, _stop, main
 
 ### Community 28 - "Development workflow"
 Cohesion: 0.18
@@ -177,8 +181,8 @@ Cohesion: 0.08
 Nodes (21): accuracy, activateStaged, data, DatasetPackage, DatasetUpdater, decode, directory, encode (+13 more)
 
 ### Community 35 - "dataset_update_test.dart"
-Cohesion: 0.20
-Nodes (6): _dataset, execute, main, statements, _temporaryDirectory, _updater
+Cohesion: 0.15
+Nodes (7): _dataset, execute, main, _RecordingDatabase, statements, _temporaryDirectory, _updater
 
 ### Community 37 - "flutter_window.cpp"
 Cohesion: 0.15
@@ -200,22 +204,26 @@ Nodes (6): Win32Window::Destroy(), Win32Window::GetClientArea(), Win32Window, ch
 Cohesion: 0.25
 Nodes (3): main, main, today
 
+### Community 43 - "directions_to_point.dart"
+Cohesion: 0.06
+Nodes (33): approximateDistanceMetres, approximateWalkMetres, atTheStop, _atTheStopMetres, centralAngle, deltaLat, deltaLon, directionsToPoint (+25 more)
+
 ## Knowledge Gaps
-- **208 isolated node(s):** `sharedPlaceEnglish`, `SharedPlacePrecision`, `SharedPlaceMarker`, `sharedPlaceMarkerWord`, `sharedPlaceAppName` (+203 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 427 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **240 isolated node(s):** `PointDirectionsResult`, `PointJourneyOption`, `NearbyStop`, `_earthRadiusMetres`, `_atTheStopMetres` (+235 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 459 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **14 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Win32Window` connect `Win32Window` to `win32_window.cpp`, `flutter_window.cpp`, `FlutterWindow`, `utils.cpp`, `.Create`, `.MessageHandler`?**
-  _High betweenness centrality (0.057) - this node is a cross-community bridge._
-- **What connects `sharedPlaceEnglish`, `SharedPlacePrecision`, `SharedPlaceMarker` to the rest of the system?**
-  _208 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+- **What connects `PointDirectionsResult`, `PointJourneyOption`, `NearbyStop` to the rest of the system?**
+  _240 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `aurora_shell.dart` be split into smaller, more focused modules?**
   _Cohesion score 0.07661290322580645 - nodes in this community are weakly interconnected._
 - **Why does `Place` connect `main.dart` to `models.dart`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
+  _High betweenness centrality (0.031) - this node is a cross-community bridge._
 - **Should `my_application.cc` be split into smaller, more focused modules?**
   _Cohesion score 0.08735632183908046 - nodes in this community are weakly interconnected._
 - **Why does `FlutterWindow` connect `FlutterWindow` to `Win32Window`, `flutter_window.cpp`, `utils.cpp`?**

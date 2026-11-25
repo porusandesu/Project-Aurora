@@ -586,5 +586,17 @@
     "seen": 1795632275.2570498,
     "ast_hash": "fa637f013f7d901dd0f827ab5ec024da",
     "semantic_hash": ""
+  },
+  "lib/directions_to_point.dart": {
+    "mtime": 1795632645.0059986,
+    "seen": 1795632809.277443,
+    "ast_hash": "e017d021ab7954e6c1466aecd42b8bc8",
+    "semantic_hash": ""
+  },
+  "test/directions_to_point_test.dart": {
+    "mtime": 1795632598.3552983,
+    "seen": 1795632809.2775846,
+    "ast_hash": "63534e96a91f562afd28e4a4b545ea1b",
+    "semantic_hash": ""
   }
 }
