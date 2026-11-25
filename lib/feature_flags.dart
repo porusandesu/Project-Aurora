@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
+import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
 class FeatureRule {
@@ -53,7 +54,7 @@ class FeatureFlagSnapshot {
 }
 
 Future<FeatureFlagSnapshot> loadFeatureFlags({
-  required Database database,
+  required Database settingsDatabase,
   required AssetBundle assets,
 }) async {
   final manifest = jsonDecode(
@@ -74,13 +75,27 @@ Future<FeatureFlagSnapshot> loadFeatureFlags({
       entry.value as Map<String, dynamic>,
     );
   }
-  final bucket = await _getOrCreateRolloutBucket(database);
+  final bucket = await _getOrCreateRolloutBucket(settingsDatabase);
   return FeatureFlagSnapshot(rules: rules, rolloutBucket: bucket);
+}
+
+Future<Database> openSettingsDatabase() async {
+  final directory = await getDatabasesPath();
+  return openDatabase(
+    path.join(directory, 'aurora_settings.db'),
+    version: 1,
+    onCreate: (db, version) => db.execute('''
+      CREATE TABLE settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      )
+    '''),
+  );
 }
 
 Future<int> _getOrCreateRolloutBucket(Database database) async {
   final rows = await database.query(
-    'metadata',
+    'settings',
     columns: ['value'],
     where: 'key = ?',
     whereArgs: ['rollout_bucket'],
@@ -91,7 +106,7 @@ Future<int> _getOrCreateRolloutBucket(Database database) async {
     if (bucket != null && bucket >= 0 && bucket < 100) return bucket;
   }
   final bucket = Random.secure().nextInt(100);
-  await database.insert('metadata', {
+  await database.insert('settings', {
     'key': 'rollout_bucket',
     'value': '$bucket',
   }, conflictAlgorithm: ConflictAlgorithm.replace);

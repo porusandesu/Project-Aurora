@@ -9,7 +9,8 @@ Checks (standard library only):
   3. The main Android manifest and iOS Info.plist must not request
      permissions that are not listed in tools/approved_permissions.txt.
   4. Tracked files must not contain local machine paths.
-  5. Tracked files must not contain private terms. The pattern comes from the
+  5. The main Android manifest must turn off backup so local data stays on the phone.
+  6. Tracked files must not contain private terms. The pattern comes from the
      PRIVATE_TERMS environment variable (store it as a repository secret so
      the list itself is never published). Matches are reported by file and
      line number only, because CI logs of a public repository are public.
@@ -128,6 +129,15 @@ def check_permissions(root: Path) -> list[str]:
     return errors
 
 
+def check_backup(root: Path) -> list[str]:
+    manifest = root / "android" / "app" / "src" / "main" / "AndroidManifest.xml"
+    if not manifest.exists():
+        return []
+    if 'android:allowBackup="false"' not in manifest.read_text(encoding="utf-8"):
+        return ["AndroidManifest.xml: android:allowBackup must be \"false\" so local data is not backed up"]
+    return []
+
+
 def check_paths(root: Path, files: list[Path]) -> list[str]:
     errors = []
     for path in files:
@@ -160,6 +170,7 @@ def run(root: Path, pattern: str | None = None) -> int:
     errors += check_dependencies(root)
     errors += check_network(root)
     errors += check_permissions(root)
+    errors += check_backup(root)
     errors += check_paths(root, files)
     term_errors, note = check_private_terms(root, files, pattern)
     errors += term_errors

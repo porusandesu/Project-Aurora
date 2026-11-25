@@ -1,10 +1,39 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
+import 'dataset_update.dart';
 import 'models.dart';
+
+Future<void> upgradeTransitSchema(
+  DatabaseExecutor db,
+  int oldVersion,
+  int newVersion,
+) async {
+  if (oldVersion < 2 && newVersion >= 2) {
+    for (final statement in [
+      'ALTER TABLE stops ADD COLUMN latitude REAL CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90)',
+      'ALTER TABLE stops ADD COLUMN longitude REAL CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180)',
+      'ALTER TABLE stops ADD COLUMN accuracy_metres REAL CHECK (accuracy_metres IS NULL OR accuracy_metres >= 0)',
+      'ALTER TABLE stops ADD COLUMN coordinate_source TEXT',
+      'ALTER TABLE landmarks ADD COLUMN latitude REAL CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90)',
+      'ALTER TABLE landmarks ADD COLUMN longitude REAL CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180)',
+      'ALTER TABLE landmarks ADD COLUMN accuracy_metres REAL CHECK (accuracy_metres IS NULL OR accuracy_metres >= 0)',
+      'ALTER TABLE landmarks ADD COLUMN coordinate_source TEXT',
+      'ALTER TABLE routes ADD COLUMN recognition_hint TEXT',
+      'ALTER TABLE routes ADD COLUMN boarding_note TEXT',
+      "ALTER TABLE routes ADD COLUMN dropoff_rule TEXT NOT NULL DEFAULT 'unknown' CHECK (dropoff_rule IN ('any_point', 'fixed_stops', 'unknown'))",
+      'ALTER TABLE routes ADD COLUMN hint_source TEXT',
+      'ALTER TABLE routes ADD COLUMN hint_verified_on TEXT',
+      "ALTER TABLE routes ADD COLUMN direction_rule TEXT NOT NULL DEFAULT 'both_ways' CHECK (direction_rule IN ('both_ways', 'outbound_only', 'inbound_only', 'unknown'))",
+    ]) {
+      await db.execute(statement);
+    }
+  }
+}
 
 class TransitDatabase {
   TransitDatabase({AssetBundle? assets}) : _assets = assets ?? rootBundle;
@@ -17,7 +46,7 @@ class TransitDatabase {
     final directory = await getDatabasesPath();
     final db = await openDatabase(
       path.join(directory, 'aurora_transit.db'),
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE metadata (
@@ -31,7 +60,15 @@ class TransitDatabase {
             name TEXT NOT NULL,
             description TEXT NOT NULL,
             source TEXT NOT NULL,
-            verification_status TEXT NOT NULL
+            verification_status TEXT NOT NULL,
+            recognition_hint TEXT,
+            boarding_note TEXT,
+            dropoff_rule TEXT NOT NULL DEFAULT 'unknown'
+              CHECK (dropoff_rule IN ('any_point', 'fixed_stops', 'unknown')),
+            hint_source TEXT,
+            hint_verified_on TEXT,
+            direction_rule TEXT NOT NULL DEFAULT 'both_ways'
+              CHECK (direction_rule IN ('both_ways', 'outbound_only', 'inbound_only', 'unknown'))
           )
         ''');
         await db.execute('''
@@ -40,7 +77,11 @@ class TransitDatabase {
             name TEXT NOT NULL,
             area TEXT NOT NULL,
             source TEXT NOT NULL,
-            verification_status TEXT NOT NULL
+            verification_status TEXT NOT NULL,
+            latitude REAL CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90),
+            longitude REAL CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180),
+            accuracy_metres REAL CHECK (accuracy_metres IS NULL OR accuracy_metres >= 0),
+            coordinate_source TEXT
           )
         ''');
         await db.execute('''
@@ -58,7 +99,11 @@ class TransitDatabase {
             area TEXT NOT NULL,
             stop_id TEXT NOT NULL REFERENCES stops(id),
             source TEXT NOT NULL,
-            verification_status TEXT NOT NULL
+            verification_status TEXT NOT NULL,
+            latitude REAL CHECK (latitude IS NULL OR latitude BETWEEN -90 AND 90),
+            longitude REAL CHECK (longitude IS NULL OR longitude BETWEEN -180 AND 180),
+            accuracy_metres REAL CHECK (accuracy_metres IS NULL OR accuracy_metres >= 0),
+            coordinate_source TEXT
           )
         ''');
         await db.execute('''
@@ -84,6 +129,7 @@ class TransitDatabase {
         ''');
         await _seed(db);
       },
+      onUpgrade: upgradeTransitSchema,
       onConfigure: (db) => db.execute('PRAGMA foreign_keys = ON'),
     );
     _database = db;
@@ -94,61 +140,222 @@ class TransitDatabase {
     final data = jsonDecode(
       await _assets.loadString('assets/sample_dataset.json'),
     ) as Map<String, dynamic>;
-    await db.transaction((txn) async {
-      final batch = txn.batch();
-      for (final row in data['routes'] as List) {
-        batch.insert('routes', {
-          'id': row['id'],
-          'name': row['name'],
-          'description': row['description'],
-          'source': row['source'],
-          'verification_status': row['verificationStatus'],
-        });
-      }
-      for (final row in data['stops'] as List) {
-        batch.insert('stops', {
-          'id': row['id'],
-          'name': row['name'],
-          'area': row['area'],
-          'source': row['source'],
-          'verification_status': row['verificationStatus'],
-        });
-      }
-      for (final row in data['routeStops'] as List) {
-        batch.insert('route_stops', {
-          'route_id': row['routeId'],
-          'stop_id': row['stopId'],
-          'position': row['position'],
-        });
-      }
-      for (final row in data['landmarks'] as List) {
-        batch.insert('landmarks', {
-          'id': row['id'],
-          'canonical_name': row['canonicalName'],
-          'area': row['area'],
-          'stop_id': row['stopId'],
-          'source': row['source'],
-          'verification_status': row['verificationStatus'],
-        });
-      }
-      for (final row in data['aliases'] as List) {
-        batch.insert('aliases', {
-          'landmark_id': row['landmarkId'],
-          'name': row['name'],
-          'approved': row['approved'],
-          'source': row['source'],
-        });
-      }
-      batch.insert('metadata', {
-        'key': 'dataset_version',
-        'value': data['version'],
+    await db.transaction((txn) => _writeDataset(txn, data));
+  }
+
+  Future<void> _writeDataset(
+    DatabaseExecutor db,
+    Map<String, dynamic> data,
+  ) async {
+    final batch = db.batch();
+    for (final row in data['routes'] as List) {
+      batch.insert('routes', {
+        'id': row['id'],
+        'name': row['name'],
+        'description': row['description'],
+        'source': row['source'],
+        'verification_status': row['verificationStatus'],
+        'recognition_hint': row['recognitionHint'],
+        'boarding_note': row['boardingNote'],
+        'dropoff_rule': row['dropoffRule'] ?? 'unknown',
+        'hint_source': row['hintSource'],
+        'hint_verified_on': row['hintVerifiedOn'],
+        'direction_rule': row['directionRule'] ?? 'both_ways',
       });
-      batch.insert('metadata', {
-        'key': 'dataset_updated_at',
-        'value': data['updatedAt'],
+    }
+    for (final row in data['stops'] as List) {
+      batch.insert('stops', {
+        'id': row['id'],
+        'name': row['name'],
+        'area': row['area'],
+        'source': row['source'],
+        'verification_status': row['verificationStatus'],
+        'latitude': row['latitude'],
+        'longitude': row['longitude'],
+        'accuracy_metres': row['accuracyMetres'],
+        'coordinate_source': row['coordinateSource'],
       });
-      await batch.commit(noResult: true);
+    }
+    for (final row in data['routeStops'] as List) {
+      batch.insert('route_stops', {
+        'route_id': row['routeId'],
+        'stop_id': row['stopId'],
+        'position': row['position'],
+      });
+    }
+    for (final row in data['landmarks'] as List) {
+      batch.insert('landmarks', {
+        'id': row['id'],
+        'canonical_name': row['canonicalName'],
+        'area': row['area'],
+        'stop_id': row['stopId'],
+        'source': row['source'],
+        'verification_status': row['verificationStatus'],
+        'latitude': row['latitude'],
+        'longitude': row['longitude'],
+        'accuracy_metres': row['accuracyMetres'],
+        'coordinate_source': row['coordinateSource'],
+      });
+    }
+    for (final row in data['aliases'] as List) {
+      batch.insert('aliases', {
+        'landmark_id': row['landmarkId'],
+        'name': row['name'],
+        'approved': row['approved'],
+        'source': row['source'],
+      });
+    }
+    for (final row in data['fares'] as List? ?? const []) {
+      batch.insert('fares', {
+        'id': row['id'],
+        'transport_type': row['transportType'],
+        'amount': row['amount'],
+        'currency': row['currency'],
+        'effective_from': row['effectiveFrom'],
+        'source': row['source'],
+        'verification_status': row['verificationStatus'],
+      });
+    }
+    batch.insert('metadata', {
+      'key': 'dataset_version',
+      'value': data['version'],
     });
+    batch.insert('metadata', {
+      'key': 'dataset_updated_at',
+      'value': data['updatedAt'],
+    });
+    await batch.commit(noResult: true);
+  }
+
+  Future<Map<String, dynamic>> exportDataset() async {
+    final db = await database;
+    final metadata = await db.query('metadata');
+    final values = {for (final row in metadata) row['key']: row['value']};
+    Map<String, Object?> rename(
+      Map<String, Object?> row,
+      Map<String, String> keys,
+    ) => {
+      for (final entry in row.entries)
+        keys[entry.key] ?? entry.key: entry.value,
+    };
+    return {
+      'schemaVersion': supportedDatasetSchemaVersion,
+      'version': values['dataset_version'],
+      'updatedAt': values['dataset_updated_at'],
+      'routes': (await db.query('routes'))
+          .map(
+            (row) => rename(row, {
+              'verification_status': 'verificationStatus',
+              'recognition_hint': 'recognitionHint',
+              'boarding_note': 'boardingNote',
+              'dropoff_rule': 'dropoffRule',
+              'hint_source': 'hintSource',
+              'hint_verified_on': 'hintVerifiedOn',
+              'direction_rule': 'directionRule',
+            }),
+          )
+          .toList(),
+      'stops': (await db.query('stops'))
+          .map(
+            (row) => rename(row, {
+              'verification_status': 'verificationStatus',
+              'accuracy_metres': 'accuracyMetres',
+              'coordinate_source': 'coordinateSource',
+            }),
+          )
+          .toList(),
+      'routeStops': (await db.query('route_stops'))
+          .map(
+            (row) => rename(row, {'route_id': 'routeId', 'stop_id': 'stopId'}),
+          )
+          .toList(),
+      'landmarks': (await db.query('landmarks'))
+          .map(
+            (row) => rename(row, {
+              'canonical_name': 'canonicalName',
+              'stop_id': 'stopId',
+              'verification_status': 'verificationStatus',
+              'accuracy_metres': 'accuracyMetres',
+              'coordinate_source': 'coordinateSource',
+            }),
+          )
+          .toList(),
+      'aliases': (await db.query('aliases'))
+          .map(
+            (row) => rename(row, {'landmark_id': 'landmarkId'})..remove('id'),
+          )
+          .toList(),
+      'fares': (await db.query('fares'))
+          .map(
+            (row) => rename(row, {
+              'transport_type': 'transportType',
+              'effective_from': 'effectiveFrom',
+              'verification_status': 'verificationStatus',
+            }),
+          )
+          .toList(),
+    };
+  }
+
+  Future<void> replaceDataset(Map<String, dynamic> data) async {
+    final db = await database;
+    await db.transaction((txn) async {
+      for (final table in [
+        'aliases',
+        'landmarks',
+        'route_stops',
+        'fares',
+        'routes',
+        'stops',
+        'metadata',
+      ]) {
+        await txn.delete(table);
+      }
+      await _writeDataset(txn, data);
+    });
+  }
+
+  Future<void> selfCheck() async {
+    final places = await this.places();
+    if (places.isEmpty ||
+        searchPlaces(places, places.first.canonicalName).isEmpty) {
+      throw StateError('Dataset search self-check failed.');
+    }
+    final routePatterns = await routes();
+    for (final route in routePatterns) {
+      if (route.stops.length < 2) continue;
+      if (planJourneys(
+        [route],
+        route.stops.first.id,
+        route.stops.last.id,
+      ).isNotEmpty) {
+        return;
+      }
+    }
+    throw StateError('Dataset journey self-check failed.');
+  }
+
+  Future<DatasetUpdater> _updater() async => DatasetUpdater(
+    directory: Directory(await getDatabasesPath()),
+    readCurrentDataset: exportDataset,
+    activateDataset: replaceDataset,
+    selfCheck: selfCheck,
+  );
+
+  Future<void> stageDatasetPackage(List<int> packageBytes) async {
+    await (await _updater()).stage(packageBytes);
+  }
+
+  Future<void> activateStagedDataset() async {
+    await (await _updater()).activateStaged();
+  }
+
+  Future<void> updateDatasetPackage(List<int> packageBytes) async {
+    await (await _updater()).update(packageBytes);
+  }
+
+  Future<void> rollbackDataset() async {
+    await (await _updater()).rollback();
   }
 
   Future<List<Place>> places() async {
@@ -190,6 +397,10 @@ class TransitDatabase {
             area: row['area'] as String,
             source: row['source'] as String,
             verificationStatus: row['verification_status'] as String,
+            latitude: (row['latitude'] as num?)?.toDouble(),
+            longitude: (row['longitude'] as num?)?.toDouble(),
+            accuracyMetres: (row['accuracy_metres'] as num?)?.toDouble(),
+            coordinateSource: row['coordinate_source'] as String?,
           ),
         )
         .toList();
@@ -216,6 +427,12 @@ class TransitDatabase {
             description: routeRow['description'] as String,
             source: routeRow['source'] as String,
             verificationStatus: routeRow['verification_status'] as String,
+            recognitionHint: routeRow['recognition_hint'] as String?,
+            boardingNote: routeRow['boarding_note'] as String?,
+            dropoffRule: routeRow['dropoff_rule'] as String,
+            hintSource: routeRow['hint_source'] as String?,
+            hintVerifiedOn: routeRow['hint_verified_on'] as String?,
+            directionRule: routeRow['direction_rule'] as String,
           ),
           stops: stopRows
               .map(
@@ -225,6 +442,10 @@ class TransitDatabase {
                   area: row['area'] as String,
                   source: row['source'] as String,
                   verificationStatus: row['verification_status'] as String,
+                  latitude: (row['latitude'] as num?)?.toDouble(),
+                  longitude: (row['longitude'] as num?)?.toDouble(),
+                  accuracyMetres: (row['accuracy_metres'] as num?)?.toDouble(),
+                  coordinateSource: row['coordinate_source'] as String?,
                 ),
               )
               .toList(),

@@ -38,6 +38,10 @@ class TransitStop {
     required this.area,
     required this.source,
     required this.verificationStatus,
+    this.latitude,
+    this.longitude,
+    this.accuracyMetres,
+    this.coordinateSource,
   });
 
   final String id;
@@ -45,6 +49,10 @@ class TransitStop {
   final String area;
   final String source;
   final String verificationStatus;
+  final double? latitude;
+  final double? longitude;
+  final double? accuracyMetres;
+  final String? coordinateSource;
 }
 
 class TransitRoute {
@@ -54,6 +62,12 @@ class TransitRoute {
     required this.description,
     required this.source,
     required this.verificationStatus,
+    this.recognitionHint,
+    this.boardingNote,
+    this.dropoffRule = 'unknown',
+    this.hintSource,
+    this.hintVerifiedOn,
+    this.directionRule = 'both_ways',
   });
 
   final String id;
@@ -61,6 +75,12 @@ class TransitRoute {
   final String description;
   final String source;
   final String verificationStatus;
+  final String? recognitionHint;
+  final String? boardingNote;
+  final String dropoffRule;
+  final String? hintSource;
+  final String? hintVerifiedOn;
+  final String directionRule;
 }
 
 class JourneyLeg {

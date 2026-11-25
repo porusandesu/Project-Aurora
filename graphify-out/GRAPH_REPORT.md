@@ -1,56 +1,63 @@
-# Graph Report - Project-Aurora  (2026-11-19)
+# Graph Report - Project-Aurora  (2026-11-25)
 
 ## Corpus Check
-- 44 files · ~11,822 words
+- 60 files · ~17,256 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 35 file(s) not represented in the graph (top: .xml 7, (none) 6, .plist 4)
-- WARNING: 35 of 108 files seen (32%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
+- WARNING: 35 of 127 files seen (28%) have no supported extractor and are missing from this graph entirely. It may look complete while representing only part of the codebase.
 
 ## Summary
-- 448 nodes · 541 edges · 27 communities (18 shown, 9 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.85)
+- 614 nodes · 804 edges · 35 communities (23 shown, 12 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 16 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c60d37e1`
+- Built from commit: `bbcf9cfd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Win32Window
-- main.dart
+- aurora_shell.dart
 - my_application.cc
 - feature_flags.dart
 - models.dart
 - with
 - FlutterWindow
 - steps
-- utils.cpp
+- main.dart
 - transit_database.dart
 - AppDelegate
 - pubspec.yaml
 - Architecture
-- channel
-- configure_release.py
-- StatelessWidget
+- privacy_check.py
+- utils.cpp
 - analysis_options.yaml
-- AuroraShell
+- feature_flags_test.dart
 - models_test.dart
 - MainActivity.kt
 - AGENTS.md
 - LaunchImage.imageset/README.md
+- PrivacyCheckTests
+- Development workflow
+- _MemorySettingsDatabase
+- updates
+- Current version
+- pull_request_template.md
+- dataset_update.dart
+- dataset_update_test.dart
 
 ## God Nodes (most connected - your core abstractions)
 1. `Win32Window` - 27 edges
-2. `FlutterWindow` - 12 edges
-3. `with` - 9 edges
-4. `WindowClassRegistrar` - 8 edges
-5. `configure_manifest()` - 8 edges
-6. `_MyApplication` - 7 edges
-7. `channel` - 6 edges
-8. `steps` - 6 edges
-9. `ConfigureManifestTest` - 6 edges
-10. `FlutterWindow::OnCreate()` - 6 edges
+2. `PrivacyCheckTests` - 13 edges
+3. `FlutterWindow` - 12 edges
+4. `make()` - 11 edges
+5. `run()` - 9 edges
+6. `Development workflow` - 9 edges
+7. `with` - 9 edges
+8. `WindowClassRegistrar` - 8 edges
+9. `configure_manifest()` - 8 edges
+10. `_MyApplication` - 7 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `FlutterWindow::OnCreate()` --calls--> `RegisterPlugins()`  [INFERRED]
@@ -59,23 +66,23 @@
   windows/runner/main.cpp → windows/runner/utils.cpp
 - `FlutterWindow` --inherits--> `Win32Window`  [EXTRACTED]
   windows/runner/flutter_window.h → windows/runner/win32_window.h
+- `wWinMain()` --calls--> `GetCommandLineArguments()`  [INFERRED]
+  windows/runner/main.cpp → windows/runner/utils.cpp
 - `my_application_activate()` --calls--> `fl_register_plugins()`  [INFERRED]
   linux/runner/my_application.cc → linux/flutter/generated_plugin_registrant.cc
-- `main()` --calls--> `my_application_new()`  [INFERRED]
-  linux/runner/main.cc → linux/runner/my_application.cc
 
 ## Import Cycles
 - None detected.
 
-## Communities (27 total, 9 thin omitted)
+## Communities (35 total, 12 thin omitted)
 
 ### Community 0 - "Win32Window"
 Cohesion: 0.06
 Nodes (23): FlutterWindow::OnCreate(), Win32Window::Destroy(), Win32Window::GetClientArea(), Win32Window::GetHandle(), Win32Window::OnCreate(), Win32Window::Show(), EnableFullDpiSupportIfAvailable(), EnableNonClientDpiScaling (+15 more)
 
-### Community 1 - "main.dart"
-Cohesion: 0.05
-Nodes (37): _AppData, _appVersion, build, _canvas, createState, _data, _database, datasetVersion (+29 more)
+### Community 1 - "aurora_shell.dart"
+Cohesion: 0.10
+Nodes (18): AppData, AuroraShell, _AuroraShellState, build, createState, _data, _database, datasetVersion (+10 more)
 
 ### Community 2 - "my_application.cc"
 Cohesion: 0.09
@@ -83,83 +90,103 @@ Nodes (14): fl_register_plugins(), main(), first_frame_cb(), my_application_acti
 
 ### Community 3 - "feature_flags.dart"
 Cohesion: 0.07
-Nodes (25): bucket, core, currentParts, enabled, FeatureFlagSnapshot, FeatureRule, fromJson, _getOrCreateRolloutBucket (+17 more)
+Nodes (28): bucket, core, currentParts, directory, enabled, FeatureFlagSnapshot, FeatureRule, fromJson (+20 more)
 
 ### Community 4 - "models.dart"
-Cohesion: 0.07
-Nodes (26): aliases, alightingStop, area, boardingStop, canonicalName, description, id, JourneyLeg (+18 more)
+Cohesion: 0.05
+Nodes (36): accuracyMetres, aliases, alightingStop, area, boardingNote, boardingStop, canonicalName, coordinateSource (+28 more)
 
 ### Community 5 - "with"
-Cohesion: 0.07
-Nodes (30): concurrency, cancel-in-progress, group, runs-on, steps, timeout-minutes, jobs, ios-simulator (+22 more)
+Cohesion: 0.06
+Nodes (36): concurrency, cancel-in-progress, group, PRIVATE_TERMS, runs-on, steps, timeout-minutes, jobs (+28 more)
 
 ### Community 6 - "FlutterWindow"
 Cohesion: 0.08
 Nodes (7): RegisterPlugins(), FlutterWindow::OnDestroy(), FlutterWindow, flutter_controller_, FlutterWindow::FlutterWindow(), project_, Win32Window::OnDestroy()
 
 ### Community 7 - "steps"
-Cohesion: 0.08
-Nodes (24): concurrency, cancel-in-progress, group, GH_TOKEN, RELEASE_CHANNEL, RELEASE_VERSION, ROLLOUT_PERCENTAGE, jobs (+16 more)
+Cohesion: 0.05
+Nodes (43): default, description, options, required, type, concurrency, cancel-in-progress, group (+35 more)
 
-### Community 8 - "utils.cpp"
-Cohesion: 0.12
-Nodes (4): wWinMain(), CreateAndAttachConsole(), GetCommandLineArguments(), Utf8FromUtf16()
+### Community 8 - "main.dart"
+Cohesion: 0.06
+Nodes (49): AuroraApp, _destination, _DiscoverPage, _EmptyMessage, _JourneyCard, _JourneyLegRow, label, leg (+41 more)
 
 ### Community 9 - "transit_database.dart"
-Cohesion: 0.09
-Nodes (13): _assets, close, _database, datasetVersion, destinationRoutes, options, originRoutes, places (+5 more)
+Cohesion: 0.07
+Nodes (23): activateStagedDataset, _assets, close, _database, datasetVersion, destinationRoutes, exportDataset, options (+15 more)
 
 ### Community 10 - "AppDelegate"
 Cohesion: 0.11
 Nodes (6): Flutter, AppDelegate, SceneDelegate, RunnerTests, UIKit, XCTest
 
 ### Community 11 - "pubspec.yaml"
-Cohesion: 0.11
-Nodes (18): dependencies, flutter, path, sqflite, description, dev_dependencies, flutter_lints, flutter_test (+10 more)
+Cohesion: 0.10
+Nodes (19): dependencies, crypto, flutter, path, sqflite, description, dev_dependencies, flutter_lints (+11 more)
 
 ### Community 12 - "Architecture"
 Cohesion: 0.11
 Nodes (15): Architecture, Current flow, Local schema, Platform boundary, Sample data boundary, Search and route calculation, How the feature cohort works, Limits (+7 more)
 
-### Community 13 - "channel"
-Cohesion: 0.11
-Nodes (18): default, description, options, required, type, channel, rollout_percentage, version (+10 more)
+### Community 14 - "privacy_check.py"
+Cohesion: 0.13
+Nodes (13): ConfigureManifestTest, configure_manifest(), main(), check_backup(), check_dependencies(), check_network(), check_paths(), check_permissions() (+5 more)
 
-### Community 14 - "configure_release.py"
-Cohesion: 0.19
-Nodes (3): ConfigureManifestTest, configure_manifest(), main()
-
-### Community 15 - "StatelessWidget"
-Cohesion: 0.14
-Nodes (13): AuroraApp, _DiscoverPage, _EmptyMessage, _JourneyCard, _JourneyLegRow, _PlaceCard, _PlannerPromo, _RoutesPage (+5 more)
+### Community 15 - "utils.cpp"
+Cohesion: 0.12
+Nodes (4): wWinMain(), CreateAndAttachConsole(), GetCommandLineArguments(), Utf8FromUtf16()
 
 ### Community 16 - "analysis_options.yaml"
 Cohesion: 0.33
 Nodes (5): analyzer, exclude, include, linter, rules
 
-### Community 17 - "AuroraShell"
-Cohesion: 0.40
-Nodes (4): AuroraShell, _AuroraShellState, _PlanPage, _PlanPageState
+### Community 17 - "feature_flags_test.dart"
+Cohesion: 0.17
+Nodes (8): insert, inserts, load, main, _manifest, _ManifestBundle, query, rolloutBucket
+
+### Community 28 - "Development workflow"
+Cohesion: 0.18
+Nodes (10): Development workflow, Naming, Release checklist, Release signing (not yet set up), Repository settings (set once, in GitHub), Roles, Rules the privacy check enforces, Slice order (+2 more)
+
+### Community 30 - "updates"
+Cohesion: 0.25
+Nodes (7): interval, updates, directory, open-pull-requests-limit, package-ecosystem, schedule, version
+
+### Community 31 - "Current version"
+Cohesion: 0.33
+Nodes (5): Active documentation alignment, Current implementation, Current version, Dated repository change history, Verification status
+
+### Community 32 - "pull_request_template.md"
+Cohesion: 0.33
+Nodes (5): Evidence, Privacy and safety (all must be true, or explain), Rollout, Scope, What and why
+
+### Community 34 - "dataset_update.dart"
+Cohesion: 0.08
+Nodes (21): accuracy, activateStaged, data, DatasetPackage, DatasetUpdater, decode, directory, encode (+13 more)
+
+### Community 35 - "dataset_update_test.dart"
+Cohesion: 0.18
+Nodes (6): _dataset, execute, main, statements, _temporaryDirectory, _updater
 
 ## Knowledge Gaps
-- **112 isolated node(s):** `child_content_`, `x`, `y`, `quit_on_close_`, `height` (+107 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 268 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **140 isolated node(s):** `DatasetPackage`, `DatasetUpdater`, `supportedDatasetSchemaVersion`, `schemaVersion`, `data` (+135 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 345 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **12 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Win32Window` connect `Win32Window` to `utils.cpp`, `FlutterWindow`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
-- **What connects `child_content_`, `x`, `y` to the rest of the system?**
-  _112 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `Win32Window` connect `Win32Window` to `FlutterWindow`, `utils.cpp`?**
+  _High betweenness centrality (0.058) - this node is a cross-community bridge._
+- **What connects `DatasetPackage`, `DatasetUpdater`, `supportedDatasetSchemaVersion` to the rest of the system?**
+  _140 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Win32Window` be split into smaller, more focused modules?**
   _Cohesion score 0.06397306397306397 - nodes in this community are weakly interconnected._
 - **Why does `FlutterWindow` connect `FlutterWindow` to `Win32Window`, `utils.cpp`?**
-  _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **Should `main.dart` be split into smaller, more focused modules?**
-  _Cohesion score 0.045454545454545456 - nodes in this community are weakly interconnected._
-- **Why does `FeatureFlagSnapshot` connect `feature_flags.dart` to `main.dart`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+- **Should `aurora_shell.dart` be split into smaller, more focused modules?**
+  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
+- **Why does `_PlanPage` connect `main.dart` to `aurora_shell.dart`?**
+  _High betweenness centrality (0.018) - this node is a cross-community bridge._
 - **Should `my_application.cc` be split into smaller, more focused modules?**
   _Cohesion score 0.08735632183908046 - nodes in this community are weakly interconnected._

@@ -64,6 +64,12 @@ class PrivacyCheckTests(unittest.TestCase):
         errors = pc.check_paths(self.root, [self.root / "notes.json"])
         self.assertEqual(len(errors), 1)
 
+    def test_backup_must_be_disabled(self):
+        make(self.root, {"android/app/src/main/AndroidManifest.xml": "<manifest><application/></manifest>"})
+        self.assertEqual(len(pc.check_backup(self.root)), 1)
+        make(self.root, {"android/app/src/main/AndroidManifest.xml": '<manifest><application android:allowBackup="false"/></manifest>'})
+        self.assertEqual(pc.check_backup(self.root), [])
+
     def test_private_term_fails_without_echoing_it(self):
         make(self.root, {"README.md": "hello secretword here\n"})
         errors, _ = pc.check_private_terms(self.root, [self.root / "README.md"], r"secretword|othername")

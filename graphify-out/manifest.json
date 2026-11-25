@@ -6,15 +6,15 @@
     "semantic_hash": ""
   },
   ".github/workflows/android-release.yml": {
-    "mtime": 1795110580.0120707,
-    "seen": 1795110595.3535533,
-    "ast_hash": "81faf4e669496dcbe5e232bc4d88753d",
+    "mtime": 1795627862.569515,
+    "seen": 1795627875.1865091,
+    "ast_hash": "6b93eb5ad982b3d9f541b623b4d27314",
     "semantic_hash": ""
   },
   ".github/workflows/ci.yml": {
-    "mtime": 1795110512.1224442,
-    "seen": 1795110595.3535686,
-    "ast_hash": "39f56c37e0eb3946c3406ca36fe45528",
+    "mtime": 1795173523.9373498,
+    "seen": 1795173536.3503113,
+    "ast_hash": "a3714f53bd756c8ed15f920374d97c83",
     "semantic_hash": ""
   },
   "analysis_options.yaml": {
@@ -54,9 +54,9 @@
     "semantic_hash": ""
   },
   "assets/sample_dataset.json": {
-    "mtime": 1795108278.8069735,
-    "seen": 1795110014.6612115,
-    "ast_hash": "9c085dcb70139ca646e874a0fe6e8136",
+    "mtime": 1795630163.976105,
+    "seen": 1795630232.422084,
+    "ast_hash": "4e86c77bd26f62594884c95ab96edc7b",
     "semantic_hash": ""
   },
   "ios/Runner/AppDelegate.swift": {
@@ -96,27 +96,27 @@
     "semantic_hash": ""
   },
   "lib/feature_flags.dart": {
-    "mtime": 1795109942.1715796,
-    "seen": 1795110014.661251,
-    "ast_hash": "4d94080dc7da091fb146df84cfb2c5a3",
+    "mtime": 1795628598.911994,
+    "seen": 1795628706.3950987,
+    "ast_hash": "97e12bcd8c8b8a2518b95a2cdf39f8bc",
     "semantic_hash": ""
   },
   "lib/main.dart": {
-    "mtime": 1795109942.325579,
-    "seen": 1795110014.6612573,
-    "ast_hash": "32ca0debc1ce467db0ee5ad06c16966c",
+    "mtime": 1795628306.9578984,
+    "seen": 1795628389.0067246,
+    "ast_hash": "3487dee465113f43a3594abc736e71ab",
     "semantic_hash": ""
   },
   "lib/models.dart": {
-    "mtime": 1795108170.2917295,
-    "seen": 1795110014.661263,
-    "ast_hash": "e84344d2da5198dbb7016223062930e0",
+    "mtime": 1795629686.6692207,
+    "seen": 1795630119.9962187,
+    "ast_hash": "04a394a2c37533d236c16550da0628cd",
     "semantic_hash": ""
   },
   "lib/transit_database.dart": {
-    "mtime": 1795108324.9576519,
-    "seen": 1795110014.6612687,
-    "ast_hash": "929d96ad76e53c41032262a7d7be0b88",
+    "mtime": 1795629928.426621,
+    "seen": 1795630119.9962304,
+    "ast_hash": "563e21be3c3af70beb725ba60409d06f",
     "semantic_hash": ""
   },
   "linux/flutter/generated_plugin_registrant.cc": {
@@ -150,9 +150,9 @@
     "semantic_hash": ""
   },
   "pubspec.yaml": {
-    "mtime": 1795109528.9381008,
-    "seen": 1795110014.6613042,
-    "ast_hash": "237f26bf7a996ed856f46a3c8b0c43a9",
+    "mtime": 1795629140.7634547,
+    "seen": 1795629509.658198,
+    "ast_hash": "0e078d224a2e6f848d4ef78f3f93a475",
     "semantic_hash": ""
   },
   "test/models_test.dart": {
@@ -435,6 +435,120 @@
     "mtime": 1795107814.0442567,
     "seen": 1795110014.6615822,
     "ast_hash": "978c1bee49d7ad5fc1a4d81099b13e18",
+    "semantic_hash": ""
+  },
+  ".github/dependabot.yml": {
+    "mtime": 1795173523.9333498,
+    "seen": 1795173536.35027,
+    "ast_hash": "830d74693ab0b91fbff70b564befb05c",
+    "semantic_hash": ""
+  },
+  "tests/test_privacy_check.py": {
+    "mtime": 1795627862.5705154,
+    "seen": 1795627875.186722,
+    "ast_hash": "af63fa89fda607e2ca1e00310dd1fff8",
+    "semantic_hash": ""
+  },
+  "tools/privacy_check.py": {
+    "mtime": 1795627862.5705154,
+    "seen": 1795627875.1867359,
+    "ast_hash": "ff2334078a3e9ea36ff359e43c715b33",
+    "semantic_hash": ""
+  },
+  ".github/pull_request_template.md": {
+    "mtime": 1795173523.9353497,
+    "seen": 1795173536.350834,
+    "ast_hash": "502d0f27dda55541dd77cd002d02722b",
+    "semantic_hash": ""
+  },
+  "current-version.md": {
+    "mtime": 1795111149.05794,
+    "seen": 1795173536.350872,
+    "ast_hash": "bd811496390d6ef79c5348fef9261cf7",
+    "semantic_hash": ""
+  },
+  "docs/WORKFLOW.md": {
+    "mtime": 1795173523.9383497,
+    "seen": 1795173536.3508825,
+    "ast_hash": "e74c96a56a2744a737a4661fac83138f",
+    "semantic_hash": ""
+  },
+  "tools/allowed_dependencies.txt": {
+    "mtime": 1795629140.926454,
+    "seen": 1795629509.6584024,
+    "ast_hash": "2c91d7c62b85de2adbfa1ba05c44b57a",
+    "semantic_hash": ""
+  },
+  "tools/approved_permissions.txt": {
+    "mtime": 1795173523.9413497,
+    "seen": 1795173536.3509803,
+    "ast_hash": "9d41f1584b0959de713c0d3fa0cad4cc",
+    "semantic_hash": ""
+  },
+  "tools/network_allowlist.txt": {
+    "mtime": 1795173523.9413497,
+    "seen": 1795173536.350992,
+    "ast_hash": "59d05211d127403f0f1925550817ab66",
+    "semantic_hash": ""
+  },
+  "lib/app/aurora_app.dart": {
+    "mtime": 1795628307.084898,
+    "seen": 1795628389.00668,
+    "ast_hash": "1c4514c63eea06269e75113c7fe1ecf7",
+    "semantic_hash": ""
+  },
+  "lib/app/aurora_shell.dart": {
+    "mtime": 1795628644.86495,
+    "seen": 1795628706.3950906,
+    "ast_hash": "bc2bea765e550d21581cd13b055e2456",
+    "semantic_hash": ""
+  },
+  "lib/ui/discover_page.dart": {
+    "mtime": 1795628307.3108974,
+    "seen": 1795628389.006757,
+    "ast_hash": "e0899bff73614383b5357372cc81c369",
+    "semantic_hash": ""
+  },
+  "lib/ui/planner_page.dart": {
+    "mtime": 1795628307.423897,
+    "seen": 1795628389.0067637,
+    "ast_hash": "cfe091adf16a656083fe3087997bc804",
+    "semantic_hash": ""
+  },
+  "lib/ui/routes_page.dart": {
+    "mtime": 1795628307.5508966,
+    "seen": 1795628389.0067842,
+    "ast_hash": "1257e0f1190e16680092b91c421ac330",
+    "semantic_hash": ""
+  },
+  "lib/ui/widgets.dart": {
+    "mtime": 1795628307.6618965,
+    "seen": 1795628389.0067909,
+    "ast_hash": "c1379b5e993abae40e646b26115712c8",
+    "semantic_hash": ""
+  },
+  "test/app_smoke_test.dart": {
+    "mtime": 1795628174.0143454,
+    "seen": 1795628389.0068395,
+    "ast_hash": "6e6d8d083b60dce22f00d5197aae8baf",
+    "semantic_hash": ""
+  },
+  "test/feature_flags_test.dart": {
+    "mtime": 1795628644.9839497,
+    "seen": 1795628706.3952036,
+    "ast_hash": "7e026aae3a34a0e4dbc610b98ca618f2",
+    "semantic_hash": ""
+  },
+  "lib/dataset_update.dart": {
+    "mtime": 1795629928.2646215,
+    "seen": 1795630119.9961803,
+    "ast_hash": "42c36b1830eaaaaf29f1b5ab76454d95",
+    "semantic_hash": ""
+  },
+  "test/dataset_update_test.dart": {
+    "mtime": 1795630180.8589356,
+    "seen": 1795630232.4222612,
+    "ast_hash": "f002615ccf8641e44c44828eca2efdc1",
     "semantic_hash": ""
   }
 }
