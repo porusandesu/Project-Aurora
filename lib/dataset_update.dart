@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as path;
 
-const supportedDatasetSchemaVersion = 2;
+const supportedDatasetSchemaVersion = 3;
 
 class DatasetPackage {
   const DatasetPackage({required this.schemaVersion, required this.data});
@@ -104,6 +104,19 @@ void _validateDataset(Map<String, dynamic> data) {
       if (row[field] != null && row[field] is! String) {
         throw FormatException('Dataset route $field must be text.');
       }
+    }
+    if (row['transportType'] != null && row['transportType'] is! String) {
+      throw const FormatException('Dataset route transportType must be text.');
+    }
+  }
+  for (final row in data['fares'] as List? ?? const []) {
+    if (row['amount'] is! num ||
+        !(row['amount'] as num).isFinite ||
+        (row['amount'] as num) < 0 ||
+        row['transportType'] is! String ||
+        row['currency'] is! String ||
+        row['effectiveFrom'] is! String) {
+      throw const FormatException('Dataset contains an invalid fare.');
     }
   }
 }

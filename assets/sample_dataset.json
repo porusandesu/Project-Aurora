@@ -1,10 +1,10 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "version": "sample-1",
   "updatedAt": "2026-11-19",
   "routes": [
-    {"id": "route-blue", "name": "Blue line", "description": "Sample route · not a real service", "source": "Synthetic demonstration data", "verificationStatus": "sample", "recognitionHint": null, "boardingNote": null, "dropoffRule": "unknown", "hintSource": null, "hintVerifiedOn": null, "directionRule": "both_ways"},
-    {"id": "route-green", "name": "Green line", "description": "Sample route · not a real service", "source": "Synthetic demonstration data", "verificationStatus": "sample", "recognitionHint": null, "boardingNote": null, "dropoffRule": "unknown", "hintSource": null, "hintVerifiedOn": null, "directionRule": "both_ways"}
+    {"id": "route-blue", "name": "Blue line", "description": "Sample route · not a real service", "source": "Synthetic demonstration data", "verificationStatus": "sample", "recognitionHint": null, "boardingNote": null, "dropoffRule": "unknown", "hintSource": null, "hintVerifiedOn": null, "directionRule": "both_ways", "transportType": "sample-transit"},
+    {"id": "route-green", "name": "Green line", "description": "Sample route · not a real service", "source": "Synthetic demonstration data", "verificationStatus": "sample", "recognitionHint": null, "boardingNote": null, "dropoffRule": "unknown", "hintSource": null, "hintVerifiedOn": null, "directionRule": "both_ways", "transportType": "sample-transit"}
   ],
   "stops": [
     {"id": "stop-central", "name": "Central stop", "area": "Central", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3456, "longitude": 34.5678, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
@@ -34,5 +34,8 @@
     {"landmarkId": "place-library", "name": "old library", "approved": 1, "source": "Synthetic demonstration data"},
     {"landmarkId": "place-gardens", "name": "the gardens", "approved": 1, "source": "Synthetic demonstration data"},
     {"landmarkId": "place-studio", "name": "the studio", "approved": 1, "source": "Synthetic demonstration data"}
+  ],
+  "fares": [
+    {"id": "fare-sample-transit", "transportType": "sample-transit", "amount": 1, "currency": "SAMPLE", "effectiveFrom": "2026-11-19", "source": "Synthetic demonstration data", "verificationStatus": "sample"}
   ]
 }

@@ -173,12 +173,99 @@ void main() {
       expect(options.single.legs[1].alightingStop.id, 'south');
     });
 
-    test(
-      'returns no route when destination is not reachable in forward order',
-      () {
-        expect(planJourneys(routes, 'north', 'central'), isEmpty);
-      },
-    );
+    test('supports a transfer with both legs travelled in reverse', () {
+      final option = planJourneys(routes, 'south', 'central').single;
+      expect(option.legs[0].boardingStop.id, 'south');
+      expect(option.legs[0].alightingStop.id, 'market');
+      expect(option.legs[1].boardingStop.id, 'market');
+      expect(option.legs[1].alightingStop.id, 'central');
+    });
+
+    test('finds travel in reverse stop order on two-way routes', () {
+      final option = planJourneys([routes.first], 'north', 'central').single;
+      expect(option.legs.single.boardingStop.id, 'north');
+      expect(option.legs.single.alightingStop.id, 'central');
+    });
+
+    test('enforces one-way rules and treats unknown direction as unverified both ways', () {
+      final outbound = RoutePattern(
+        route: const TransitRoute(
+          id: 'out',
+          name: 'Out',
+          description: '',
+          source: '',
+          verificationStatus: 'verified',
+          directionRule: 'outbound_only',
+        ),
+        stops: routes.first.stops,
+      );
+      expect(planJourneys([outbound], 'north', 'central'), isEmpty);
+      final inbound = RoutePattern(
+        route: const TransitRoute(
+          id: 'in',
+          name: 'In',
+          description: '',
+          source: '',
+          verificationStatus: 'verified',
+          directionRule: 'inbound_only',
+        ),
+        stops: routes.first.stops,
+      );
+      expect(planJourneys([inbound], 'north', 'central'), hasLength(1));
+      final unknown = RoutePattern(
+        route: const TransitRoute(
+          id: 'unknown',
+          name: 'Unknown',
+          description: '',
+          source: '',
+          verificationStatus: 'unverified',
+          directionRule: 'unknown',
+        ),
+        stops: routes.first.stops,
+      );
+      expect(planJourneys([unknown], 'north', 'central'), hasLength(1));
+    });
+
+    test('reports an estimated duration and sums fares for every leg', () {
+      final priced = RoutePattern(
+        route: const TransitRoute(
+          id: 'priced',
+          name: 'Priced',
+          description: '',
+          source: '',
+          verificationStatus: 'sample',
+          fareAmount: 2,
+          fareCurrency: 'SAMPLE',
+        ),
+        stops: routes.first.stops,
+      );
+      final option = planJourneys([priced], 'central', 'north').single;
+      expect(option.estimatedMinutes, 8);
+      expect(option.totalFare, 2);
+      expect(option.currency, 'SAMPLE');
+      expect(option.stopCount, 3);
+    });
+
+    test('ranks shorter options before slower transfers', () {
+      final direct = RoutePattern(
+        route: const TransitRoute(
+          id: 'direct',
+          name: 'Direct',
+          description: '',
+          source: '',
+          verificationStatus: 'sample',
+        ),
+        stops: [central, market, south],
+      );
+      final options = planJourneys([...routes, direct], 'central', 'south');
+      expect(options.first.legs.single.route.id, 'direct');
+      expect(options.last.changes, 1);
+    });
+
+    test('de-duplicates the same route and transfer combination', () {
+      final duplicated = [...routes, routes.first];
+      expect(planJourneys(duplicated, 'central', 'south'), hasLength(1));
+    });
 
     test('does not create a trip from a stop to itself', () {
       expect(planJourneys(routes, 'central', 'central'), isEmpty);

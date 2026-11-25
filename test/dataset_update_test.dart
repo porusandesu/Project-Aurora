@@ -179,6 +179,27 @@ void main() {
     expect(database.statements.join(' '), contains("DEFAULT 'both_ways'"));
   });
 
+  test('v2 migration connects routes to fare types', () async {
+    final database = _RecordingDatabase();
+    await upgradeTransitSchema(database, 2, 3);
+    expect(database.statements, [
+      'ALTER TABLE routes ADD COLUMN transport_type TEXT',
+    ]);
+  });
+
+  test('rejects negative or non-finite fares at the package boundary', () {
+    final invalid = _dataset('bad-fare')
+      ..['fares'] = [
+        {
+          'transportType': 'bus',
+          'amount': -1,
+          'currency': 'USD',
+          'effectiveFrom': '2026-01-01',
+        },
+      ];
+    expect(() => DatasetPackage.encode(invalid), throwsFormatException);
+  });
+
   test(
     'staging leaves the active dataset unchanged until activation',
     () async {

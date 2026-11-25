@@ -33,6 +33,9 @@ Future<void> upgradeTransitSchema(
       await db.execute(statement);
     }
   }
+  if (oldVersion < 3 && newVersion >= 3) {
+    await db.execute("ALTER TABLE routes ADD COLUMN transport_type TEXT");
+  }
 }
 
 class TransitDatabase {
@@ -46,7 +49,7 @@ class TransitDatabase {
     final directory = await getDatabasesPath();
     final db = await openDatabase(
       path.join(directory, 'aurora_transit.db'),
-      version: 2,
+      version: 3,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE metadata (
@@ -68,7 +71,8 @@ class TransitDatabase {
             hint_source TEXT,
             hint_verified_on TEXT,
             direction_rule TEXT NOT NULL DEFAULT 'both_ways'
-              CHECK (direction_rule IN ('both_ways', 'outbound_only', 'inbound_only', 'unknown'))
+              CHECK (direction_rule IN ('both_ways', 'outbound_only', 'inbound_only', 'unknown')),
+            transport_type TEXT
           )
         ''');
         await db.execute('''
@@ -161,6 +165,7 @@ class TransitDatabase {
         'hint_source': row['hintSource'],
         'hint_verified_on': row['hintVerifiedOn'],
         'direction_rule': row['directionRule'] ?? 'both_ways',
+        'transport_type': row['transportType'],
       });
     }
     for (final row in data['stops'] as List) {
@@ -252,6 +257,7 @@ class TransitDatabase {
               'hint_source': 'hintSource',
               'hint_verified_on': 'hintVerifiedOn',
               'direction_rule': 'directionRule',
+              'transport_type': 'transportType',
             }),
           )
           .toList(),
@@ -409,6 +415,11 @@ class TransitDatabase {
   Future<List<RoutePattern>> routes() async {
     final db = await database;
     final routeRows = await db.query('routes', orderBy: 'name COLLATE NOCASE');
+    final fareRows = await db.query('fares', orderBy: 'effective_from DESC');
+    final fares = <String, Map<String, Object?>>{};
+    for (final fare in fareRows) {
+      fares.putIfAbsent(fare['transport_type'] as String, () => fare);
+    }
     final patterns = <RoutePattern>[];
     for (final routeRow in routeRows) {
       final stopRows = await db.rawQuery(
@@ -433,6 +444,11 @@ class TransitDatabase {
             hintSource: routeRow['hint_source'] as String?,
             hintVerifiedOn: routeRow['hint_verified_on'] as String?,
             directionRule: routeRow['direction_rule'] as String,
+            transportType: routeRow['transport_type'] as String?,
+            fareAmount: (fares[routeRow['transport_type']]?['amount'] as num?)
+                ?.toDouble(),
+            fareCurrency:
+                fares[routeRow['transport_type']]?['currency'] as String?,
           ),
           stops: stopRows
               .map(
@@ -478,62 +494,75 @@ List<JourneyOption> planJourneys(
 ) {
   if (originStopId == destinationStopId) return const [];
   final options = <JourneyOption>[];
-  final originRoutes = routes.where(
-    (r) => r.stops.any((s) => s.id == originStopId),
-  );
-  final destinationRoutes = routes.where(
-    (r) => r.stops.any((s) => s.id == destinationStopId),
-  );
-
-  for (final route in originRoutes) {
-    final start = route.stops.indexWhere((s) => s.id == originStopId);
-    final end = route.stops.indexWhere((s) => s.id == destinationStopId);
-    if (end > start) {
-      options.add(
-        JourneyOption(
-          legs: [
-            JourneyLeg(
-              route: route.route,
-              boardingStop: route.stops[start],
-              alightingStop: route.stops[end],
-            ),
-          ],
-        ),
-      );
-    }
+  final seen = <String>{};
+  List<int> path(RoutePattern route, String from, String to) {
+    final start = route.stops.indexWhere((s) => s.id == from);
+    final end = route.stops.indexWhere((s) => s.id == to);
+    if (start < 0 || end < 0 || start == end) return const [];
+    final forward = end > start;
+    if ((route.route.directionRule == 'outbound_only' && !forward) ||
+        (route.route.directionRule == 'inbound_only' && forward))
+      return const [];
+    return forward
+        ? [for (var i = start; i <= end; i++) i]
+        : [for (var i = start; i >= end; i--) i];
   }
 
-  for (final first in originRoutes) {
-    final start = first.stops.indexWhere((s) => s.id == originStopId);
-    for (final second in destinationRoutes) {
-      if (first.route.id == second.route.id) continue;
-      final destination = second.stops.indexWhere(
-        (s) => s.id == destinationStopId,
-      );
-      for (final transfer in first.stops.skip(start + 1)) {
-        final transferIndex = second.stops.indexWhere(
-          (s) => s.id == transfer.id,
-        );
-        if (transferIndex >= 0 && destination > transferIndex) {
-          options.add(
-            JourneyOption(
-              legs: [
-                JourneyLeg(
-                  route: first.route,
-                  boardingStop: first.stops[start],
-                  alightingStop: transfer,
-                ),
-                JourneyLeg(
-                  route: second.route,
-                  boardingStop: second.stops[transferIndex],
-                  alightingStop: second.stops[destination],
-                ),
-              ],
-            ),
-          );
-        }
+  void add(List<JourneyLeg> legs, String key) {
+    if (!seen.add(key)) return;
+    final stops = legs.fold(0, (sum, leg) => sum + leg.stopCount);
+    // shortcut: four minutes per segment and five per transfer, replace when verified timings exist.
+    options.add(
+      JourneyOption(
+        legs: legs,
+        estimatedMinutes: (stops - legs.length) * 4 + (legs.length - 1) * 5,
+      ),
+    );
+  }
+
+  for (final route in routes) {
+    final indexes = path(route, originStopId, destinationStopId);
+    if (indexes.isEmpty) continue;
+    add([
+      JourneyLeg(
+        route: route.route,
+        boardingStop: route.stops[indexes.first],
+        alightingStop: route.stops[indexes.last],
+        stopCount: indexes.length,
+      ),
+    ], 'direct:${route.route.id}');
+  }
+  for (final first in routes) {
+    for (var i = 0; i < first.stops.length; i++) {
+      final transfer = first.stops[i];
+      final firstPath = path(first, originStopId, transfer.id);
+      if (firstPath.isEmpty) continue;
+      for (final second in routes) {
+        if (first.route.id == second.route.id) continue;
+        final secondPath = path(second, transfer.id, destinationStopId);
+        if (secondPath.isEmpty) continue;
+        add([
+          JourneyLeg(
+            route: first.route,
+            boardingStop: first.stops[firstPath.first],
+            alightingStop: transfer,
+            stopCount: firstPath.length,
+          ),
+          JourneyLeg(
+            route: second.route,
+            boardingStop: second.stops[secondPath.first],
+            alightingStop: second.stops[secondPath.last],
+            stopCount: secondPath.length,
+          ),
+        ], 'transfer:${first.route.id}:${transfer.id}:${second.route.id}');
       }
     }
   }
+  options.sort((a, b) {
+    final time = a.estimatedMinutes.compareTo(b.estimatedMinutes);
+    if (time != 0) return time;
+    final changes = a.changes.compareTo(b.changes);
+    return changes != 0 ? changes : a.stopCount.compareTo(b.stopCount);
+  });
   return options;
 }

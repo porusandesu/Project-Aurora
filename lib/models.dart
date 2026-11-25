@@ -68,6 +68,9 @@ class TransitRoute {
     this.hintSource,
     this.hintVerifiedOn,
     this.directionRule = 'both_ways',
+    this.transportType,
+    this.fareAmount,
+    this.fareCurrency,
   });
 
   final String id;
@@ -81,6 +84,9 @@ class TransitRoute {
   final String? hintSource;
   final String? hintVerifiedOn;
   final String directionRule;
+  final String? transportType;
+  final double? fareAmount;
+  final String? fareCurrency;
 }
 
 class JourneyLeg {
@@ -88,17 +94,32 @@ class JourneyLeg {
     required this.route,
     required this.boardingStop,
     required this.alightingStop,
+    required this.stopCount,
   });
 
   final TransitRoute route;
   final TransitStop boardingStop;
   final TransitStop alightingStop;
+  final int stopCount;
 }
 
 class JourneyOption {
-  const JourneyOption({required this.legs});
+  const JourneyOption({required this.legs, required this.estimatedMinutes});
 
   final List<JourneyLeg> legs;
+  final int estimatedMinutes;
+  int get changes => legs.length - 1;
+  int get stopCount =>
+      legs.fold(0, (total, leg) => total + leg.stopCount) - changes;
+  double? get totalFare {
+    if (legs.any((leg) => leg.route.fareAmount == null)) return null;
+    final currencies = legs.map((leg) => leg.route.fareCurrency).toSet();
+    if (currencies.length != 1) return null;
+    return legs.fold(0.0, (total, leg) => total + leg.route.fareAmount!);
+  }
+
+  String? get currency =>
+      totalFare == null ? null : legs.first.route.fareCurrency;
 }
 
 class RoutePattern {

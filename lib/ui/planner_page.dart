@@ -161,6 +161,17 @@ class _JourneyCard extends StatelessWidget {
               ),
             _JourneyLegRow(leg: option.legs[i]),
           ],
+          const SizedBox(height: 12),
+          Text(
+            'About ${option.estimatedMinutes} min · estimated',
+            style: TextStyle(color: _ink.withValues(alpha: .72), fontSize: 13),
+          ),
+          Text(
+            option.totalFare == null
+                ? 'Fare unavailable'
+                : 'Total fare: ${option.totalFare!.toStringAsFixed(2)} ${option.currency}',
+            style: TextStyle(color: _ink.withValues(alpha: .72), fontSize: 13),
+          ),
         ],
       ),
     ),
@@ -194,6 +205,13 @@ class _JourneyLegRow extends StatelessWidget {
             Text(
               leg.route.name,
               style: const TextStyle(color: _ink, fontWeight: FontWeight.w700),
+            ),
+            Text(
+              'Route data: ${leg.route.verificationStatus}${leg.route.directionRule == 'unknown' ? ' · direction unverified' : ''}',
+              style: TextStyle(
+                color: _ink.withValues(alpha: .55),
+                fontSize: 11,
+              ),
             ),
             const SizedBox(height: 3),
             Text(
