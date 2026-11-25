@@ -568,5 +568,23 @@
     "seen": 1795631788.7501538,
     "ast_hash": "0fc63cb98935c2728babe1cf1080eb9f",
     "semantic_hash": ""
+  },
+  "lib/l10n/shared_place_en.dart": {
+    "mtime": 1795632044.3897035,
+    "seen": 1795632275.2569017,
+    "ast_hash": "49a5f3681673bcafe595b155640fe7a6",
+    "semantic_hash": ""
+  },
+  "lib/shared_place_message.dart": {
+    "mtime": 1795632131.4464471,
+    "seen": 1795632275.2569342,
+    "ast_hash": "0e47635378fd4018c33b4eee08c816f5",
+    "semantic_hash": ""
+  },
+  "test/shared_place_message_test.dart": {
+    "mtime": 1795632131.480447,
+    "seen": 1795632275.2570498,
+    "ast_hash": "fa637f013f7d901dd0f827ab5ec024da",
+    "semantic_hash": ""
   }
 }
