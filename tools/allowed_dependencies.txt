@@ -1,0 +1,7 @@
+# Dependencies approved for this project. Add new ones only in a reviewed change.
+flutter
+flutter_test
+flutter_lints
+crypto
+sqflite
+path

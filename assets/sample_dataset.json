@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 3,
+  "version": "sample-1",
+  "updatedAt": "2026-11-19",
+  "routes": [
+    {"id": "route-blue", "name": "Blue line", "description": "Sample route · not a real service", "source": "Synthetic demonstration data", "verificationStatus": "sample", "recognitionHint": null, "boardingNote": null, "dropoffRule": "unknown", "hintSource": null, "hintVerifiedOn": null, "directionRule": "both_ways", "transportType": "sample-transit"},
+    {"id": "route-green", "name": "Green line", "description": "Sample route · not a real service", "source": "Synthetic demonstration data", "verificationStatus": "sample", "recognitionHint": null, "boardingNote": null, "dropoffRule": "unknown", "hintSource": null, "hintVerifiedOn": null, "directionRule": "both_ways", "transportType": "sample-transit"}
+  ],
+  "stops": [
+    {"id": "stop-central", "name": "Central stop", "area": "Central", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3456, "longitude": 34.5678, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
+    {"id": "stop-market", "name": "Market stop", "area": "Central", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3466, "longitude": 34.5688, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
+    {"id": "stop-library", "name": "Library stop", "area": "North", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3500, "longitude": 34.5700, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
+    {"id": "stop-east", "name": "East stop", "area": "East", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3440, "longitude": 34.5750, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
+    {"id": "stop-west", "name": "West stop", "area": "West", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3400, "longitude": 34.5600, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
+    {"id": "stop-south", "name": "South stop", "area": "South", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3300, "longitude": 34.5650, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"}
+  ],
+  "routeStops": [
+    {"routeId": "route-blue", "stopId": "stop-central", "position": 1},
+    {"routeId": "route-blue", "stopId": "stop-market", "position": 2},
+    {"routeId": "route-blue", "stopId": "stop-library", "position": 3},
+    {"routeId": "route-blue", "stopId": "stop-east", "position": 4},
+    {"routeId": "route-green", "stopId": "stop-west", "position": 1},
+    {"routeId": "route-green", "stopId": "stop-market", "position": 2},
+    {"routeId": "route-green", "stopId": "stop-south", "position": 3}
+  ],
+  "landmarks": [
+    {"id": "place-hall", "canonicalName": "Community hall", "area": "Central", "stopId": "stop-central", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3456, "longitude": 34.5678, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
+    {"id": "place-library", "canonicalName": "North library", "area": "North", "stopId": "stop-library", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3500, "longitude": 34.5700, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
+    {"id": "place-gardens", "canonicalName": "Riverside gardens", "area": "East", "stopId": "stop-east", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3440, "longitude": 34.5750, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"},
+    {"id": "place-studio", "canonicalName": "Arts studio", "area": "South", "stopId": "stop-south", "source": "Synthetic demonstration data", "verificationStatus": "sample", "latitude": 12.3300, "longitude": 34.5650, "accuracyMetres": 25, "coordinateSource": "Synthetic fixture coordinates; not field observations"}
+  ],
+  "aliases": [
+    {"landmarkId": "place-hall", "name": "the hall", "approved": 1, "source": "Synthetic demonstration data"},
+    {"landmarkId": "place-library", "name": "old library", "approved": 1, "source": "Synthetic demonstration data"},
+    {"landmarkId": "place-gardens", "name": "the gardens", "approved": 1, "source": "Synthetic demonstration data"},
+    {"landmarkId": "place-studio", "name": "the studio", "approved": 1, "source": "Synthetic demonstration data"}
+  ],
+  "fares": [
+    {"id": "fare-sample-transit", "transportType": "sample-transit", "amount": 1, "currency": "SAMPLE", "effectiveFrom": "2026-11-19", "source": "Synthetic demonstration data", "verificationStatus": "sample"}
+  ]
+}
