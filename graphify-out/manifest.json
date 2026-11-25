@@ -108,15 +108,15 @@
     "semantic_hash": ""
   },
   "lib/models.dart": {
-    "mtime": 1795630644.959253,
-    "seen": 1795630652.2797968,
-    "ast_hash": "86e9411b788be7ee7b4086137887d72e",
+    "mtime": 1795631678.8659809,
+    "seen": 1795631788.7498024,
+    "ast_hash": "4679c6e3503ba300594d061b86316f12",
     "semantic_hash": ""
   },
   "lib/transit_database.dart": {
-    "mtime": 1795630684.9330971,
-    "seen": 1795630716.9181018,
-    "ast_hash": "41ddc5a3b4152e7da8d6d9c04429abf0",
+    "mtime": 1795631678.9999807,
+    "seen": 1795631788.7498283,
+    "ast_hash": "962f08462bae7fe03408f2d516d73d2d",
     "semantic_hash": ""
   },
   "linux/flutter/generated_plugin_registrant.cc": {
@@ -549,6 +549,24 @@
     "mtime": 1795630645.1732523,
     "seen": 1795630652.2798843,
     "ast_hash": "03924da0d55d8c8411cd584e21dc45d3",
+    "semantic_hash": ""
+  },
+  "lib/plus_code.dart": {
+    "mtime": 1795631781.1689034,
+    "seen": 1795631788.7498186,
+    "ast_hash": "3ace77538607694a8fd0213b208fbe0a",
+    "semantic_hash": ""
+  },
+  "test/plus_code_test.dart": {
+    "mtime": 1795631776.338907,
+    "seen": 1795631788.7499497,
+    "ast_hash": "483fb00fe900e760ed4e56642cf50ddd",
+    "semantic_hash": ""
+  },
+  "test/fixtures/open_location_code/README.md": {
+    "mtime": 1795631185.8363488,
+    "seen": 1795631788.7501538,
+    "ast_hash": "0fc63cb98935c2728babe1cf1080eb9f",
     "semantic_hash": ""
   }
 }

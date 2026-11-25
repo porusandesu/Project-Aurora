@@ -501,8 +501,9 @@ List<JourneyOption> planJourneys(
     if (start < 0 || end < 0 || start == end) return const [];
     final forward = end > start;
     if ((route.route.directionRule == 'outbound_only' && !forward) ||
-        (route.route.directionRule == 'inbound_only' && forward))
+        (route.route.directionRule == 'inbound_only' && forward)) {
       return const [];
+    }
     return forward
         ? [for (var i = start; i <= end; i++) i]
         : [for (var i = start; i >= end; i--) i];

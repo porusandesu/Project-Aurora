@@ -115,7 +115,10 @@ class JourneyOption {
     if (legs.any((leg) => leg.route.fareAmount == null)) return null;
     final currencies = legs.map((leg) => leg.route.fareCurrency).toSet();
     if (currencies.length != 1) return null;
-    return legs.fold(0.0, (total, leg) => total + leg.route.fareAmount!);
+    return legs.fold<double>(
+      0,
+      (total, leg) => total + (leg.route.fareAmount ?? 0),
+    );
   }
 
   String? get currency =>
